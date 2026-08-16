@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"text/tabwriter"
 )
 
 // Adds a new task to the list
@@ -60,12 +62,17 @@ func setStatus(tasks *[]Task, status Status, id int) error {
 }
 
 func listItems(tasks *[]Task, filter Status) {
+
+	w := tabwriter.NewWriter(os.Stdout, 1, 1, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tSTATUS\tTEXT")
+
 	for i := 0; i < len(*tasks); i++ {
 		t := &(*tasks)[i]
 		if filter == "" || t.Status == filter {
-			fmt.Printf("id [%v] status [%v] text [%v]\n", t.Id, t.Status, t.Text)
+			fmt.Fprintf(w, "%v\t%v\t%v\n", t.Id, t.Status, t.Text)
 		}
 	}
+	w.Flush()
 }
 
 // Retrieve an index given an Id
